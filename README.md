@@ -43,7 +43,7 @@ $ docker-compose up -d
 ### 3. Akses Proyek sesuai Kebutuhan
 Pada pengaturan Docker Proyek ini, secara default akan meng-expose Port 2 Service yang digunakan; Yakni, Database (MariaDB : 3306) dan Web Server (Nginx : 8080).
 
-Jika ingin menghubungkan Database dengan Tool Database Manager seperti DBeaver, anda dapat menyesuaikan konfirugasi dengan File `.env`.
+Jika ingin menghubungkan Database dengan Tool Database Manager seperti DBeaver, anda dapat menyesuaikan konfirugasi dengan File `config.go`.
 #### !! DBeaver
 Berikut langkah-langkah konfigurasi DBeaver :
 
@@ -55,10 +55,7 @@ Berikut langkah-langkah konfigurasi DBeaver :
 #### !! Postman Collection
 Selain pengaturan Database Manager dari luar Docker yang dapat mengakses ke service Database, di Proyek ini juga disematkan Collection Postman yang dapat anda Gunakan untuk mencoba API.
 
-## Daftar API
-
-Daftar API dapat dilihat dari Collection API Postman pada Repository path Backend.
-
+## Menonaktifkan Proyek
 Lakukan perintah berikut di Terminal untuk Menonaktifkan Proyek :
 ```
 $ docker-compose down --volumes
