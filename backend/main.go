@@ -29,5 +29,5 @@ func main() {
 	// Gunakan router utama sebagai parent dari securedRouter
 	masterRouter.PathPrefix("/").Handler(middleware.SecurityMiddleware(securedRouter))
 
-	log.Fatal(http.ListenAndServe(":8080", masterRouter))
+	log.Fatal(http.ListenAndServe(":8000", masterRouter))
 }

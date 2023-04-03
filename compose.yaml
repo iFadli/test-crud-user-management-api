@@ -1,5 +1,6 @@
 services:
   backend:
+    hostname: backend-hub.docker
     build:
       context: backend
       target: builder
@@ -10,6 +11,7 @@ services:
         condition: service_healthy
 
   db:
+    hostname: db-hub.docker
     # We use a mariadb image which supports both amd64 & arm64 architecture
     image: mariadb:10-focal
     # If you really want to use MySQL, uncomment the following line
@@ -34,6 +36,7 @@ services:
       - 3306:3306
 
   proxy:
+    hostname: proxy-hub.docker
     image: nginx
     volumes:
       - type: bind
@@ -41,7 +44,7 @@ services:
         target: /etc/nginx/conf.d/default.conf
         read_only: true
     ports:
-      - 80:80
+      - 8080:80
     depends_on: 
       - backend
 
