@@ -54,6 +54,9 @@ Berikut langkah-langkah konfigurasi DBeaver :
 >5. Jika berhasil, akan ada Ikon centang hijau pada daftar Database di sebelah kiri.
 #### !! Postman Collection
 Selain pengaturan Database Manager dari luar Docker yang dapat mengakses ke service Database, di Proyek ini juga disematkan Collection Postman yang dapat anda Gunakan untuk mencoba API.
+>Pre-Build Account :
+>- Username : administrator
+>- Password : admin
 
 ## Menonaktifkan Proyek
 Lakukan perintah berikut di Terminal untuk Menonaktifkan Proyek :
