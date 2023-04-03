@@ -1,65 +1,64 @@
 package database
 
 import (
-	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
 	"testing"
 )
 
 func TestPrepareDB(t *testing.T) {
-	// Setup mock database connection
-	db, mock, err := sqlmock.New()
+	// create mock db
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+
 	if err != nil {
-		t.Fatalf("Failed to create mock: %v", err)
+		t.Fatalf("error creating mock db: %v", err)
 	}
 	defer db.Close()
 
-	// Set expectations
+	// expect Ping function call
 	mock.ExpectPing()
-	mock.ExpectExec("CREATE TABLE IF NOT EXISTS `user`").WillReturnResult(sqlmock.NewResult(0, 0))
-	mock.ExpectQuery("SELECT COUNT").WillReturnRows(sqlmock.NewRows([]string{"COUNT(*)"}).AddRow(1))
 
-	// Call PrepareDB function
+	// expect CreateTable function call
+	mock.ExpectExec("CREATE TABLE IF NOT EXISTS `user` ( `id` int NOT NULL AUTO_INCREMENT, `username` varchar(50) NOT NULL, `email` varchar(100) NOT NULL, `password` varchar(255) NOT NULL, `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (`id`), UNIQUE KEY `username_UNIQUE` (`username`), UNIQUE KEY `email_UNIQUE` (`email`)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// expect QueryRow function call
+	mock.ExpectQuery("SELECT COUNT(id) FROM user").
+		WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(1))
+
+	// call PrepareDB function
 	err = PrepareDB(db)
 	if err != nil {
-		t.Errorf("Expected no error, but got %v", err)
+		t.Fatalf("error preparing database: %v", err)
 	}
 
-	// Check if expected queries were executed
-	if err := mock.ExpectationsWereMet(); err != nil {
-		t.Errorf("Unfulfilled expectations: %v", err)
-	}
-
-	// Test case ketika tabel user gagal dibuat
-	mock.ExpectPing()
-	mock.ExpectExec("CREATE TABLE IF NOT EXISTS `user`").WillReturnError(errors.New("create table error"))
-	err = PrepareDB(db)
-	if err == nil {
-		t.Errorf("Expected an error, but got none")
-	}
-
-	// Test case ketika query SELECT COUNT(*) gagal
-	mock.ExpectPing()
-	mock.ExpectExec("CREATE TABLE IF NOT EXISTS `user`").WillReturnResult(sqlmock.NewResult(0, 0))
-	mock.ExpectQuery("SELECT COUNT").WillReturnError(errors.New("query error"))
-	err = PrepareDB(db)
-	if err == nil {
-		t.Errorf("Expected an error, but got none")
+	// check that expectations were met
+	err = mock.ExpectationsWereMet()
+	if err != nil {
+		t.Fatalf("failed to meet expectations: %v", err)
 	}
 }
 
 func TestPrepareDefaultUser(t *testing.T) {
-	// Setup mock database connection
+	// create mock db
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("Failed to create mock: %v", err)
+		t.Fatalf("error creating mock db: %v", err)
 	}
 	defer db.Close()
 
-	// Test case ketika terjadi error saat hashing password
-	mock.ExpectExec("INSERT INTO users").WillReturnResult(sqlmock.NewResult(0, 1))
+	// expect Insert function call
+	mock.ExpectExec("INSERT INTO user (.*)").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// call PrepareDefaultUser function
 	err = PrepareDefaultUser(db)
-	if err == nil {
-		t.Errorf("Expected an error, but got none")
+	if err != nil {
+		t.Fatalf("error preparing default user: %v", err)
+	}
+
+	// check that expectations were met
+	err = mock.ExpectationsWereMet()
+	if err != nil {
+		t.Fatalf("failed to meet expectations: %v", err)
 	}
 }

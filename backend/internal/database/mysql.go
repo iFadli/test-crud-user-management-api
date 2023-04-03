@@ -28,11 +28,6 @@ func Connect() (*sql.DB, error) {
 		time.Sleep(5 * time.Second)
 	}
 
-	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
-		return nil, err
-	}
-
 	if err = db.Ping(); err != nil {
 		log.Fatal("Error connecting to database: ", err)
 		return nil, err

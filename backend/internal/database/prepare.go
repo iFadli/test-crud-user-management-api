@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 	"user-management-api/internal/utils"
 )
@@ -25,7 +24,7 @@ func PrepareDB(db *sql.DB) error {
 	}
 
 	var count int
-	if err = db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count); err != nil {
+	if err = db.QueryRow("SELECT COUNT(id) FROM user").Scan(&count); err != nil {
 		return err
 	}
 
@@ -49,8 +48,7 @@ func PrepareDefaultUser(db *sql.DB) error {
 	}
 	password = hashedPassword
 
-	query := fmt.Sprintf("INSERT INTO user (username, email, password) VALUES ('%s', '%s', '%s')", username, email, password)
-	_, err = db.Exec(query)
+	_, err = db.Exec("INSERT INTO user (username, email, password) VALUES (?, ?, ?)", username, email, password)
 	if err != nil {
 		return err
 	}

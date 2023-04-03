@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -103,6 +104,7 @@ func SaveUserHandler(w http.ResponseWriter, r *http.Request) {
 	userController := controllers.NewUserController()
 
 	if err := userController.SaveUser(&user); err != nil {
+		fmt.Println(err.Error())
 		WriteResponse(w, http.StatusInternalServerError, "Failed to save user", nil)
 		return
 	}

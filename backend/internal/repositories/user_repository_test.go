@@ -136,3 +136,107 @@ func TestGetUserByUsername(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, user)
 }
+
+func TestSaveUser(t *testing.T) {
+	// create mock user data
+	user := &models.User{
+		Username: "testsave",
+		Email:    "save@test.com",
+		Password: "ini!hebat",
+	}
+
+	// create mock db and repository
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("error creating mock db: %v", err)
+	}
+	defer db.Close()
+
+	repo := &repositories.UserRepository{
+		Db: db,
+	}
+
+	// expect insert query
+	mock.ExpectExec("^INSERT INTO user").
+		WithArgs(user.Username, user.Email, user.Password).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// call SaveUser function
+	err = repo.SaveUser(user)
+	if err != nil {
+		t.Fatalf("error saving user: %v", err)
+	}
+
+	// check that expectations were met
+	err = mock.ExpectationsWereMet()
+	if err != nil {
+		t.Fatalf("failed to meet expectations: %v", err)
+	}
+}
+func TestUpdateUser(t *testing.T) {
+	// create mock user data
+	user := &models.User{
+		ID:       1,
+		Username: "testupdate",
+		Email:    "update@test.xyz",
+		Password: "perbaruitest",
+	}
+
+	// create mock db and repository
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("error creating mock db: %v", err)
+	}
+	defer db.Close()
+
+	repo := &repositories.UserRepository{
+		Db: db,
+	}
+
+	// expect update query
+	mock.ExpectExec(`^UPDATE user`).
+		WithArgs(user.Username, user.Email, user.Password, user.ID).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// call UpdateUser function
+	err = repo.UpdateUser(user.ID, user)
+	if err != nil {
+		t.Fatalf("error updating user: %v", err)
+	}
+
+	// check that expectations were met
+	err = mock.ExpectationsWereMet()
+	if err != nil {
+		t.Fatalf("failed to meet expectations: %v", err)
+	}
+}
+
+func TestDeleteUser(t *testing.T) {
+	// create mock db and repository
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("error creating mock db: %v", err)
+	}
+	defer db.Close()
+
+	repo := &repositories.UserRepository{
+		Db: db,
+	}
+
+	// expect delete query
+	mock.ExpectExec("DELETE FROM user WHERE id = ?").
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// call DeleteUser function
+	err = repo.DeleteUser(1)
+	if err != nil {
+		t.Fatalf("error deleting user: %v", err)
+	}
+
+	// check that expectations were met
+	err = mock.ExpectationsWereMet()
+	if err != nil {
+		t.Fatalf("failed to meet expectations: %v", err)
+	}
+}

@@ -80,9 +80,7 @@ func (r *UserRepository) GetUserByUsername(username string) (*models.User, error
 }
 
 func (r *UserRepository) SaveUser(user *models.User) error {
-	query := fmt.Sprintf("INSERT INTO user (username, email, password) VALUES ('%s', '%s', '%s')", user.Username, user.Email, user.Password)
-
-	_, err := r.Db.Exec(query)
+	_, err := r.Db.Exec("INSERT INTO user (username, email, password) VALUES (?, ?, ?)", user.Username, user.Email, user.Password)
 	if err != nil {
 		return err
 	}
@@ -91,9 +89,7 @@ func (r *UserRepository) SaveUser(user *models.User) error {
 }
 
 func (r *UserRepository) UpdateUser(id int, user *models.User) error {
-	query := fmt.Sprintf("UPDATE user SET username = '%s', email = '%s', password = '%s', updated_at = NOW() WHERE id = %d", user.Username, user.Email, user.Password, id)
-
-	result, err := r.Db.Exec(query)
+	result, err := r.Db.Exec("UPDATE user SET username = ?, email = ?, password = ?, updated_at = NOW() WHERE id = ?", user.Username, user.Email, user.Password, id)
 	if err != nil {
 		return err
 	}
@@ -108,9 +104,7 @@ func (r *UserRepository) UpdateUser(id int, user *models.User) error {
 }
 
 func (r *UserRepository) DeleteUser(id int) error {
-	query := fmt.Sprintf("DELETE FROM user WHERE id = %d", id)
-
-	result, err := r.Db.Exec(query)
+	result, err := r.Db.Exec("DELETE FROM user WHERE id = ?", id)
 	if err != nil {
 		return err
 	}

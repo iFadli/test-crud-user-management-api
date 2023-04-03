@@ -19,3 +19,22 @@ func GetInstance() (*sql.DB, error) {
 
 	return db, nil
 }
+
+func MockConnect() (*sql.DB, error) {
+	// code to connect to database
+	return nil, nil
+}
+
+func MockGetInstance(db *sql.DB) (*sql.DB, error) {
+	once.Do(func() {
+		if db == nil {
+			var err error
+			db, err = MockConnect()
+			if err != nil {
+				panic(err)
+			}
+		}
+	})
+
+	return db, nil
+}
