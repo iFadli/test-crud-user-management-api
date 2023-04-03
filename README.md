@@ -30,7 +30,7 @@ $ cd test-user-management-api
 ```
 
 
-### 3. Jalankan Proyek ini dengan docker-compose
+### 2. Jalankan Proyek ini dengan docker-compose
 ```
 $ docker-compose up -d
 ... # tunggu hingga selesai # ...
@@ -40,7 +40,7 @@ $ docker-compose up -d
  ⠿ Container test-user-management-api-proxy-1    Started                                                                                                                        4.6s
 ```
 
-### 4. Akses Proyek sesuai Kebutuhan
+### 3. Akses Proyek sesuai Kebutuhan
 Pada pengaturan Docker Proyek ini, secara default akan meng-expose Port 2 Service yang digunakan; Yakni, Database (MariaDB : 3306) dan Web Server (Nginx : 8080).
 
 Jika ingin menghubungkan Database dengan Tool Database Manager seperti DBeaver, anda dapat menyesuaikan konfirugasi dengan File `.env`.
